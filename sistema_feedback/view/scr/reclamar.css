@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 15px 40px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #5b3cff;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+}
+
+.btn-login {
+    display: inline-block;
+    text-decoration: none;
+    background-color: white;
+    border: 1px solid #5b3cff;
+    color: #5b3cff;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+/* CENTRALIZA O FORMULÁRIO */
+main {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* CARD DO FORMULÁRIO */
+.form-container {
+    background-color: white;
+    padding: 30px;
+    width: 600px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+/* CAMPOS */
+.form-container input,
+.form-container select,
+.form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* ÁREA DE TEXTO GRANDE */
+.form-container textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+/* NOTA SLIDER */
+.nota-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.nota-container input {
+    flex: 1;
+}
+
+/* BOTÕES */
+.botoes-form {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-enviar {
+    background-color: #5b3cff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-limpar {
+    background-color: white;
+    color: #5b3cff;
+    border: 1px solid #5b3cff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
