@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedSmart - Login Empresa</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">FeedSmart</div>
+
+        <nav>
+            <a href="principal.html">Início</a>
+            <a href="reclamar.html">Reclamar</a>
+            <button class="btn-login">Login Empresa</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h2>Login da empresa</h2>
+
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="E-mail">
+                <input type="password" id="senha" placeholder="Senha">
+                <button type="submit">Entrar</button>
+            </form>
+
+
+
+            <p>Quer cadastrar sua empresa? <a href="#">Clique aqui</a></p>
+        </div>
+    </main>
+
+    <footer>
+        <p>2026 FeedSmart — Protótipo</p>
+    </footer>
+
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            console.log("cliquei");
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+
+            try {
+                const res = await fetch("http://localhost:3000/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const data = await res.json();
+
+                console.log(data);
+
+                if (res.ok) {
+                    alert("ok");
+                } else {
+                    console.log(data);
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.log(err);
+                alert("erro");
+            }
+        });
+    </script>
+</body>
+
+</html>
