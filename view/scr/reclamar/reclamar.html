@@ -24,37 +24,65 @@
         <div class="form-container">
             <h2>Enviar Reclamação / Feedback</h2>
 
-            <input type="text" placeholder="Seu nome (opcional)">
 
-            <input type="email" placeholder="Seu e-mail (opcional)">
+            <form id="formFeedback">
 
-            <select>
-                <option>-- Escolha a empresa --</option>
-                <option>Loja Exemplo</option>
-                <option>Delivery Rápido</option>
-                <option>SPA Beleza</option>
-            </select>
 
-            <div class="nota-container">
-                <label>Nota: 1</label>
-                <input type="range" min="1" max="5" value="1">
-            </div>
+                <input type="text" placeholder="Seu nome (opcional)">
 
-            <textarea placeholder="Conte a sua experiência"></textarea>
+                <input type="email" placeholder="Seu e-mail (opcional)">
 
-            <div class="botoes-form">
-                <button class="btn-enviar">Enviar</button>
-                <button class="btn-limpar">Limpar</button>
-            </div>
+                <select id="empresa">
+                    <option value="">-- Escolha a empresa --</option>
+                </select>
+
+                <div class="nota-container">
+                    <label id="notaLabel">Nota: 1</label>
+                    <input type="range" id="nota" min="1" max="5" value="1">
+                </div>
+
+                <textarea id="descricao" placeholder="Conte a sua experiência"></textarea>
+
+                <div class="botoes-form">
+                    <button type="submit" class="btn-enviar">Enviar</button>
+                    <button type="reset" class="btn-limpar">Limpar</button>
+                </div>
+
+            </form>
         </div>
     </main>
+
     <script>
+        const nota = document.getElementById("nota");
+        const label = document.getElementById("notaLabel");
+
+        nota.addEventListener("input", () => {
+            label.textContent = "Nota: " + nota.value;
+        });
+
         document.getElementById("formFeedback").addEventListener("submit", async (e) => {
             e.preventDefault();
-
-            const titulo = document.getElementById("titulo").value;
+            const nome = document.querySelector('input[type="text"]').value;
+            const email = document.querySelector('input[type="email"]').value;
+            const titulo = "Feedback";
             const descricao = document.getElementById("descricao").value;
-            const nota = document.getElementById("nota").value;
+            const notaValor = document.getElementById("nota").value;
+            const empresa_id = document.getElementById("empresa").value;
+
+            async function carregarEmpresas() {
+                const res = await fetch("http://127.0.0.1:3000/empresas");
+                const empresas = await res.json();
+
+                const select = document.getElementById("empresa");
+
+                empresas.forEach(emp => {
+                    select.innerHTML += `
+            <option value="${emp.id}">${emp.nome}</option>
+        `;
+                });
+            }
+
+            carregarEmpresas();
 
             try {
                 const res = await fetch("http://127.0.0.1:3000/feedbacks", {
@@ -65,24 +93,29 @@
                     body: JSON.stringify({
                         titulo,
                         descricao,
-                        nota,
+                        nota: notaValor,
                         usuario_id: 1,
                         empresa_id: 1
                     })
                 });
 
+                const data = await res.text();
+
+                console.log("STATUS:", res.status);
+                console.log("RESPOSTA:", data);
+
                 if (res.ok) {
                     alert("Feedback enviado!");
                 } else {
-                    alert("Erro ao enviar");
+                    alert("Erro: " + data);
                 }
-
             } catch (err) {
                 console.log(err);
                 alert("Erro");
             }
         });
     </script>
+
 </body>
 
 </html>

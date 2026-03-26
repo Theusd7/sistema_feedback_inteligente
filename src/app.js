@@ -42,19 +42,36 @@ app.post("/register", (req, res) => {
     });
 });
 app.post("/feedbacks", (req, res) => {
-    const { titulo, descricao, nota, usuario_id, empresa_id } = req.body;
+    const { titulo, descricao, nota, empresa_id, nome_cliente, email_cliente } = req.body;
 
     const db = require("./config/database");
 
     const sql = `
-        INSERT INTO feedbacks (titulo, descricao, nota, usuario_id, empresa_id)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO feedbacks 
+        (titulo, descricao, nota, empresa_id, nome_cliente, email_cliente)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(sql, [titulo, descricao, nota, usuario_id, empresa_id], (err, result) => {
+    db.query(sql, [titulo, descricao, nota, empresa_id, nome_cliente, email_cliente], (err, result) => {
         if (err) return res.status(500).json(err);
 
-        res.json({ message: "Feedback enviado" });
+        res.status(201).json({ message: "Feedback criado" });
+    });
+});
+
+app.post("/empresas", (req, res) => {
+    const { nome, email, senha } = req.body;
+
+    const db = require("./config/database");
+
+    const sql = "INSERT INTO empresas (nome, email, senha) VALUES (?, ?, ?)";
+
+    console.log(req.body);
+
+    db.query(sql, [nome, email, senha], (err, result) => {
+        if (err) return res.status(500).json(err);
+
+        res.status(201).json({ message: "Empresa cadastrada 🚀" });
     });
 });
 module.exports = app;
