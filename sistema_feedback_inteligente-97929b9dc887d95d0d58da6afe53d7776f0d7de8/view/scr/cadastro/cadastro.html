@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedSmart - Cadastro Empresa</title>
+    <link rel="stylesheet" href="cadastro.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">FeedSmart</div>
+
+        <nav>
+            <a href="../principal/principal.html">Início</a>
+            <a href="../reclamar/reclamar.html">Reclamar</a>
+            <a href="../login/login.html" class="btn-login">Login Empresa</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h2>Cadastrar Empresa</h2>
+
+            <p id="erroCadastro" class="erro">Erro ao cadastrar</p>
+            <p id="sucessoCadastro" class="sucesso">Cadastro realizado com sucesso!</p>
+
+            <form id="cadastroForm">
+                <input type="text" id="nome" placeholder="Nome da empresa" required>
+                <input type="email" id="email" placeholder="E-mail" required>
+                <input type="password" id="senha" placeholder="Senha" required>
+
+                <button type="submit">Cadastrar</button>
+            </form>
+
+            <p>Já tem conta? <a href="../login/login.html">Fazer login</a></p>
+        </div>
+    </main>
+
+    <footer>
+        <p>2026 FeedSmart — Protótipo</p>
+    </footer>
+
+    <script>
+        document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+
+            document.getElementById("erroCadastro").style.display = "none";
+            document.getElementById("sucessoCadastro").style.display = "none";
+
+            try {
+                const res = await fetch("http://127.0.0.1:3000/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome, email, senha, tipo: "empresa" })
+                });
+
+                if (res.ok) {
+                    document.getElementById("sucessoCadastro").style.display = "block";
+                } else {
+                    document.getElementById("erroCadastro").style.display = "block";
+                }
+
+            } catch (err) {
+                console.log(err);
+                document.getElementById("erroCadastro").style.display = "block";
+            }
+        });
+    </script>
+
+</body>
+</html>
