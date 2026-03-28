@@ -28,17 +28,21 @@ app.post("/login", (req, res) => {
         }
     });
 });
-app.post("/register", (req, res) => {
-    const { nome, email, senha, tipo } = req.body;
+app.post("/empresas", (req, res) => {
+    const { nome, email, senha } = req.body;
 
-    const db = require("./config/database");
+    const sql = `
+        INSERT INTO usuarios (nome, email, senha, tipo)
+        VALUES (?, ?, ?, 'empresa')
+    `;
 
-    const sql = "INSERT INTO usuarios (nome, email, senha, tipo) VALUES (?, ?, ?, ?)";
+    db.query(sql, [nome, email, senha], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ erro: "Erro ao cadastrar" });
+        }
 
-    db.query(sql, [nome, email, senha, tipo], (err, result) => {
-        if (err) return res.status(500).json(err);
-
-        res.json({ message: "Cadastro feito" });
+        res.status(201).json({ message: "Empresa cadastrada 🚀" });
     });
 });
 app.post("/feedbacks", (req, res) => {

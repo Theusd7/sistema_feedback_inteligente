@@ -39,3 +39,5 @@ CREATE TABLE respostas (
 
   FOREIGN KEY (feedback_id) REFERENCES feedbacks(id)
 );
+
+FOREIGN KEY (empresa_id) REFERENCES usuarios(id)
