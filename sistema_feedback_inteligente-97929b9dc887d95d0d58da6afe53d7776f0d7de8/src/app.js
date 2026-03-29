@@ -42,19 +42,23 @@ app.post("/register", (req, res) => {
     });
 });
 app.post("/feedbacks", (req, res) => {
-    const { titulo, descricao, nota, usuario_id, empresa_id } = req.body;
+    const { titulo, descricao, nota, empresa_id, nome_cliente, email_cliente } = req.body;
 
-    const db = require("./config/database");
+    console.log(req.body);
 
     const sql = `
-        INSERT INTO feedbacks (titulo, descricao, nota, usuario_id, empresa_id)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO feedbacks 
+        (titulo, descricao, nota, empresa_id, nome_cliente, email_cliente)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(sql, [titulo, descricao, nota, usuario_id, empresa_id], (err, result) => {
-        if (err) return res.status(500).json(err);
+    db.query(sql, [titulo, descricao, nota, empresa_id, nome_cliente, email_cliente], (err, result) => {
+        if (err) {
+            console.log("ERRO SQL:", err);
+            return res.status(500).json({ erro: "Erro ao enviar feedback" });
+        }
 
-        res.json({ message: "Feedback enviado" });
+        res.status(201).json({ message: "Feedback enviado 🚀" });
     });
 });
 module.exports = app;

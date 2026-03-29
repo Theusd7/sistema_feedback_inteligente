@@ -35,7 +35,5 @@ CREATE TABLE respostas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   feedback_id INT,
   resposta TEXT NOT NULL,
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  FOREIGN KEY (feedback_id) REFERENCES feedbacks(id)
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

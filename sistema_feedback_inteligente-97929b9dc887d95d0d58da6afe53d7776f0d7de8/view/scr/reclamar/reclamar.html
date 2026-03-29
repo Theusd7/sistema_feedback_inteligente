@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enviar Reclamação - FeedSmart</title>
-    <link rel="stylesheet" href="reclamar.css">
+    <link rel="stylesheet" href="../reclamar/reclamar.css">
 </head>
 
 <body>
@@ -21,40 +21,44 @@
     </header>
 
     <main>
-        <div class="form-container">
-            <h2>Enviar Reclamação / Feedback</h2>
+        <input type="text" id="nome_cliente" placeholder="Seu nome (opcional)">
+        <input type="email" id="email_cliente" placeholder="Seu e-mail (opcional)">
 
-            <input type="text" placeholder="Seu nome (opcional)">
+        <select id="empresa_id">
+            <option value="1">Loja Exemplo</option>
+        </select>
 
-            <input type="email" placeholder="Seu e-mail (opcional)">
-
-            <select>
-                <option>-- Escolha a empresa --</option>
-                <option>Loja Exemplo</option>
-                <option>Delivery Rápido</option>
-                <option>SPA Beleza</option>
-            </select>
-
-            <div class="nota-container">
-                <label>Nota: 1</label>
-                <input type="range" min="1" max="5" value="1">
-            </div>
-
-            <textarea placeholder="Conte a sua experiência"></textarea>
-
-            <div class="botoes-form">
-                <button class="btn-enviar">Enviar</button>
-                <button class="btn-limpar">Limpar</button>
-            </div>
+        <div class="nota-container">
+            <label>Nota: <span id="valorNota">1</span></label>
+            <input type="range" id="nota" min="1" max="5" value="1">
         </div>
+
+        <textarea id="descricao" placeholder="Conte a sua experiência"></textarea>
+
+        <button class="btn-enviar">Enviar</button>
     </main>
     <script>
-        document.getElementById("formFeedback").addEventListener("submit", async (e) => {
-            e.preventDefault();
+        // atualizar número da nota
+        const nota = document.getElementById("nota");
+        const valorNota = document.getElementById("valorNota");
 
-            const titulo = document.getElementById("titulo").value;
-            const descricao = document.getElementById("descricao").value;
-            const nota = document.getElementById("nota").value;
+        nota.addEventListener("input", () => {
+            valorNota.textContent = nota.value;
+        });
+        console.log("EMPRESA ID:", document.getElementById("empresa_id").value);
+        // botão enviar
+        document.querySelector(".btn-enviar").addEventListener("click", async () => {
+
+            const data = {
+                titulo: "Feedback", // 👈 fixo já que você tirou o campo
+                descricao: document.getElementById("descricao").value,
+                nota: nota.value,
+                empresa_id: document.getElementById("empresa_id").value,
+                nome_cliente: document.getElementById("nome_cliente").value,
+                email_cliente: document.getElementById("email_cliente").value
+            };
+
+            console.log("ENVIANDO:", data);
 
             try {
                 const res = await fetch("http://127.0.0.1:3000/feedbacks", {
@@ -62,24 +66,22 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({
-                        titulo,
-                        descricao,
-                        nota,
-                        usuario_id: 1,
-                        empresa_id: 1
-                    })
+                    body: JSON.stringify(data)
                 });
 
+                const result = await res.json();
+
+                console.log("RESPOSTA:", result);
+
                 if (res.ok) {
-                    alert("Feedback enviado!");
+                    alert("Feedback enviado");
                 } else {
-                    alert("Erro ao enviar");
+                    alert("Erro ao enviar + JSON.stringify(result)");
                 }
 
             } catch (err) {
-                console.log(err);
-                alert("Erro");
+                console.log("ERRO:", err);
+                alert("Erro de conexão");
             }
         });
     </script>
