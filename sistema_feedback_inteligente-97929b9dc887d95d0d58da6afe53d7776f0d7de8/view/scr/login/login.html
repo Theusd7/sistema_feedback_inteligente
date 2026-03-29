@@ -56,7 +56,7 @@
             document.getElementById("erroLogin").style.display = "none";
 
             try {
-                const res = await fetch("http://localhost:3000/login", {
+                const res = await fetch("http://127.0.0.1:3000/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -64,15 +64,21 @@
                     body: JSON.stringify({ email, senha })
                 });
 
-                const data = await res.json();
 
+                const data = await res.json();
+                const usuario = data;
+        
+
+                localStorage.setItem("empresa_id", data.usuario.id);
                 if (res.ok) {
+                    console.log("RESPOSTA:", data);
+                    alert(JSON.stringify(data));
                     window.location.href = "../dashboard/dashboard.html";
                 } else {
                     document.getElementById("erroLogin").style.display = "block";
                 }
             } catch (err) {
-                console.log(err);
+                console.log("ERRO COMPLETO:", err);
                 alert("erro");
             }
         });

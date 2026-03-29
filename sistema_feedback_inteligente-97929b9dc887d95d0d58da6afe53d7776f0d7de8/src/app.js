@@ -8,7 +8,7 @@ require("./config/database");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
 app.use(express.json());
-app.use("/feedbacks", feedbackRoutes);
+//app.use("/feedbacks", feedbackRoutes);
 
 
 app.post("/login", (req, res) => {
@@ -22,7 +22,10 @@ app.post("/login", (req, res) => {
         if (err) return res.status(500).json(err);
 
         if (result.length > 0) {
-            res.json({ message: "Login efetuado" });
+            res.json({
+                message: "Login efetuado",
+                usuario: result[0] // 👈 AQUI
+            });
         } else {
             res.status(401).json({ message: "algo deu errado" });
         }
@@ -42,23 +45,47 @@ app.post("/register", (req, res) => {
     });
 });
 app.post("/feedbacks", (req, res) => {
+    const db = require("./config/database");
     const { titulo, descricao, nota, empresa_id, nome_cliente, email_cliente } = req.body;
 
     console.log(req.body);
+    
 
     const sql = `
         INSERT INTO feedbacks 
-        (titulo, descricao, nota, empresa_id, nome_cliente, email_cliente)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (titulo, descricao, nota, empresa_id)
+        VALUES (?, ?, ?, ?)
     `;
 
-    db.query(sql, [titulo, descricao, nota, empresa_id, nome_cliente, email_cliente], (err, result) => {
+    db.query(sql, [titulo, descricao, nota, empresa_id], (err, result) => {
         if (err) {
             console.log("ERRO SQL:", err);
             return res.status(500).json({ erro: "Erro ao enviar feedback" });
         }
 
         res.status(201).json({ message: "Feedback enviado 🚀" });
+    });
+});
+app.get("/empresas", (req, res) => {
+    const sql = "SELECT id, nome FROM usuarios WHERE tipo = 'empresa'";
+
+    const db = require("./config/database");
+    db.query(sql, (err, result) => {
+            if (err) return res.status(500).json(err);
+            res.json(result);
+        });
+    });
+app.get("/feedbacks/:empresa_id", (req, res) => {
+    const { empresa_id } = req.params;
+
+    const db = require("./config/database");
+
+    const sql = "SELECT * FROM feedbacks WHERE empresa_id = ?";
+
+    db.query(sql, [empresa_id], (err, result) => {
+        if (err) return res.status(500).json(err);
+
+        res.json(result);
     });
 });
 module.exports = app;

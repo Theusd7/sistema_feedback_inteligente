@@ -31,10 +31,10 @@
 
             <div class="card">
                 <h3>Resumo</h3>
-                <p>Total: <b>2</b></p>
-                <p class="positivo">Positivos: 1</p>
-                <p class="neutro"> Neutros: 1</p>
-                <p class="negativo">Negativos: 0</p>
+                <p>Total: <b id="total">0</b></p>
+                <p id="pos">Positivos: 0</p>
+                <p id="neu">Neutros: 0</p>
+                <p id="neg">Negativos: 0</p>
             </div>
 
 
@@ -69,54 +69,97 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Ana</td>
-                        <td>5</td>
-                        <td class="positivo">positivo</td>
-                        <td>Atendimento excelente!</td>
-                        <td>2025-10-01</td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>Maria</td>
-                        <td>4</td>
-                        <td class="neutro">neutro</td>
-                        <td>Produto bom, mas embalagem podia melhorar.</td>
-                        <td>2025-10-03</td>
-                    </tr>
-                </tbody>
+                <tbody id="tabela-feedbacks"></tbody>
             </table>
         </div>
 
     </main>
 
     <script>
-        const ctx = document.getElementById('grafico');
+        const empresa_id = localStorage.getItem("empresa_id");
 
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Positivos', 'Neutros', 'Negativos'],
-                datasets: [{
-                    data: [1, 1, 0],
-                    backgroundColor: [
-                        '#22c55e',
-                        '#f59e0b',
-                        '#ef4444'
-                    ]
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
+        if (!empresa_id) {
+            alert("Você precisa estar logado como empresa!");
+            window.location.href = "../login/login.html";
+        }
+        let grafico;
+
+        function atualizarGrafico(pos, neu, neg) {
+            const ctx = document.getElementById('grafico');
+
+            if (grafico) {
+                grafico.destroy();
             }
-        });
+
+            grafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positivos', 'Neutros', 'Negativos'],
+                    datasets: [{
+                        data: [pos, neu, neg],
+                        backgroundColor: [
+                            '#22c55e',
+                            '#f59e0b',
+                            '#ef4444'
+                        ]
+                    }]
+                }
+            });
+        }
+        console.log("empresa_id:", empresa_id);
+        fetch(`http://127.0.0.1:3000/feedbacks/${empresa_id}`)
+            .then(res => res.json())
+            .then(data => {
+                const tabela = document.getElementById("tabela-feedbacks");
+
+                tabela.innerHTML = "";
+
+                let positivos = 0;
+                let neutros = 0;
+                let negativos = 0;
+
+                data.forEach((fb, index) => {
+
+                    let sentimento = "";
+                    let classe = "";
+
+                    if (fb.nota >= 4) {
+                        sentimento = "positivo";
+                        classe = "positivo";
+                        positivos++;
+                    } else if (fb.nota == 3) {
+                        sentimento = "neutro";
+                        classe = "neutro";
+                        neutros++;
+                    } else {
+                        sentimento = "negativo";
+                        classe = "negativo";
+                        negativos++;
+                    }
+
+                    const linha = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${fb.nome}</td>
+                    <td>${fb.nota}</td>
+                    <td class="${classe}">${sentimento}</td>
+                    <td>${fb.descricao}</td>
+                    <td>${new Date(fb.data).toLocaleDateString()}</td>
+                </tr>
+            `;
+
+                    tabela.innerHTML += linha;
+                });
+
+                // atualizar resumo
+                document.getElementById("total").innerText = data.length;
+                document.getElementById("pos").innerText = `Positivos: ${positivos}`;
+                document.getElementById("neu").innerText = `Neutros: ${neutros}`;
+                document.getElementById("neg").innerText = `Negativos: ${negativos}`;
+
+                // atualizar gráfico
+                atualizarGrafico(positivos, neutros, negativos);
+            });
     </script>
 
 </body>

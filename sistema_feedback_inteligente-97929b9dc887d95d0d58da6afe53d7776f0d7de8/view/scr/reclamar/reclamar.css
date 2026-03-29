@@ -84,15 +84,24 @@ main {
 /* NOTA SLIDER */
 .nota-container {
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.nota-label {
+    display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 5px; /* 👈 controla o espacinho entre Nota e número */
+    font-size: 14px;
 }
 
-.nota-container input {
-    flex: 1;
+.nota-container input[type="range"] {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: block; /* evita bug de alinhamento */
 }
-
 /* BOTÕES */
 .botoes-form {
     display: flex;
